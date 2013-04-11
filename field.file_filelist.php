@@ -33,8 +33,8 @@ class Field_file_filelist
 	 */
 	public function form_output($data, $entry_id, $field)
 	{
-		$forms = form_dropdown($data['form_slug'], $this->files($data['custom']['folder_id'], $field->is_required), $data['value'], 'id="'.$data['form_slug'].'"');
 		
+		$forms = form_dropdown($data['form_slug'], $this->files($data['custom']['folder_id'], $field->is_required), $data['value'], 'id="'.$data['form_slug'].'"');
 		
 		return $forms;
 	}
@@ -42,7 +42,7 @@ class Field_file_filelist
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Output form input
+	 * Process before outputting
 	 *
 	 * @param	array
 	 * @param	array
@@ -66,7 +66,7 @@ class Field_file_filelist
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Output form input
+	 * Process before outputting for the plugin
 	 *
 	 * @param	array
 	 * @param	array
@@ -74,14 +74,21 @@ class Field_file_filelist
 	 */
 	public function pre_output_plugin($input, $params)
 	{
+		$this->CI->load->library('files/files');
 		$file = Files::get_file((int)$input);
 		$folders = $this->folders('yes');
 
 		if (trim($input) != '')
 		{
-			$return['name'] = $folders[$input];
-			$return['id']	= (int)$input;
-			$return['path'] = $file['data']->path;
+			$return['id']			= (int)$input;
+			$return['filename']		= $file['data']->filename;		//File name of the image.
+			$return['image']		= $file['data']->path;			//Full path to the image.
+			$return['path']			= $file['data']->path;			//Full path to the image.
+			$return['description']	= $file['data']->description;	//The image description.
+			$return['ext']			= $file['data']->extension;		//The image extension.
+			$return['mimetype']		= $file['data']->mimetype;		//The image mimetype.
+			$return['width']		= $file['data']->width;			//Width of the full image.
+			$return['height']		= $file['data']->height;		//Height of the full image.
 			
 			return $return;
 		}
